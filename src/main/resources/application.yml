@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: parking-app
+  profiles:
+    active: local
+
+server:
+    port: 8080
+    servlet:
+        context-path: /
+
+springdoc:
+  packages-to-scan: com.demo.parking.controller
+
+logging:
+  level:
+    root: info
