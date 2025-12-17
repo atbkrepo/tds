@@ -1,5 +1,6 @@
 package com.demo.parking.repository.mem;
 
+import com.demo.parking.dto.StrategyEnum;
 import com.demo.parking.dto.VehicleType;
 import com.demo.parking.entity.mem.VehicleEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ class ParkingSpaceRepositoryConcurrencyTest {
                 try {
                     startLatch.await();
                     VehicleEntity vehicle = createVehicle("plate-" + index);
-                    VehicleEntity registered = repository.registerVehicle(vehicle);
+                    VehicleEntity registered = repository.registerVehicle(vehicle, StrategyEnum.ANY);
                 } catch (Exception e) {
                     failedRegistrations.incrementAndGet();
                 } finally {
@@ -89,7 +90,7 @@ class ParkingSpaceRepositoryConcurrencyTest {
                     if (index % 2 == 0) {//evry second task is register
                         VehicleEntity vehicle = createVehicle("plate-" + index);
                         try {
-                            VehicleEntity registered = repository.registerVehicle(vehicle);
+                            VehicleEntity registered = repository.registerVehicle(vehicle, StrategyEnum.ANY);
                             registeredVehicles.add(registered);
                             successfulRegistrations.incrementAndGet();
                         } catch (RuntimeException ignored) {

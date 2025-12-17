@@ -15,3 +15,6 @@ springdoc:
 logging:
   level:
     root: info
+
+parking:
+  strategy: MAX

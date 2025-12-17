@@ -4,9 +4,11 @@ import com.demo.parking.dto.*;
 import com.demo.parking.entity.mem.ParkingBillEntity;
 import com.demo.parking.entity.mem.VehicleEntity;
 import com.demo.parking.repository.mem.ParkingSpaceRepositoryInMemoryImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -22,6 +24,9 @@ public class ParkingVehicleService {
     private final BillingVehicleService billingVehicleService;
     private final ModelMapper modelMapper;
 
+    @Value("${parking.strategy: ANY}")
+    private StrategyEnum strategy;
+
     public ParkingSlotsDto getParkingStatus() {
         int available = this.repository.getAvailableSlots();
         return ParkingSlotsDto.builder()
@@ -33,7 +38,7 @@ public class ParkingVehicleService {
     public ParkingResponseDto parkVehicle(ParkingRequestDto request) {
         VehicleEntity vehicle = this.modelMapper.map(request, VehicleEntity.class);
         vehicle.setParkingStartTime(LocalDateTime.now(Clock.systemUTC()));
-        return this.modelMapper.map(this.repository.registerVehicle(vehicle), ParkingResponseDto.class);
+        return this.modelMapper.map(this.repository.registerVehicle(vehicle, strategy), ParkingResponseDto.class);
     }
 
     public synchronized BillResponseDto unParkVehicle(BillRequestDto request) {
